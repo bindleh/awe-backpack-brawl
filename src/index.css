@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Trebuchet MS", system-ui, sans-serif;
+
+  --color-ink: #1b1611;
+  --color-panel: #2a2119;
+  --color-panel-edge: #5a4530;
+  --color-parchment: #f1e4c8;
+  --color-muted: #a8957a;
+  --color-gold: #e3b04b;
+  --color-life: #d6534a;
+  --color-block: #a8a29e;
+}
+
+@layer base {
+  body {
+    @apply min-h-screen bg-ink text-parchment antialiased;
+  }
+  button {
+    @apply cursor-pointer disabled:cursor-not-allowed;
+  }
+}
