@@ -29,6 +29,7 @@ export function firstFreeSlot(state: RunState): number {
 export function buyBlocker(state: RunState, offerIndex: number): string | null {
   const itemId = state.shop[offerIndex];
   if (!itemId) return "Already sold";
+  if (firstFreeSlot(state) === -1) return "Backpack full";
   if (state.gold < getItem(itemId).price) return "Not enough gold";
   return null;
 }
@@ -43,6 +44,39 @@ export function buyItem(state: RunState, offerIndex: number): RunState {
   const shop = [...state.shop];
   shop[offerIndex] = null;
   return { ...state, gold: state.gold - getItem(itemId).price, shop, backpack, nextUid: state.nextUid + 1 };
+}
+
+/** Why a backpack item can't be sold right now, or `null` if it can. */
+export function sellBlocker(state: RunState, slotIndex: number): string | null {
+  if (!Number.isInteger(slotIndex) || slotIndex < 0 || slotIndex >= state.backpack.length) return "Invalid slot";
+  if (!state.backpack[slotIndex]) return "Empty slot";
+  return null;
+}
+
+/** Sells one backpack item for half its catalog price, rounded down. */
+export function sellItem(state: RunState, slotIndex: number): RunState {
+  if (sellBlocker(state, slotIndex) !== null) return state;
+  const backpack = [...state.backpack];
+  const item = backpack[slotIndex];
+  if (!item) return state;
+  const value = Math.floor(getItem(item.itemId).price / 2);
+  backpack[slotIndex] = null;
+  return { ...state, gold: state.gold + value, backpack };
+}
+
+export const REROLL_COST = 1;
+
+/** Why the shop can't be rerolled right now, or `null` if it can. */
+export function rerollBlocker(state: RunState): string | null {
+  if (state.gold < REROLL_COST) return "Not enough gold";
+  return null;
+}
+
+/** Rolls a completely new set of four offers and pays 1 gold atomically. */
+export function rerollShop(state: RunState): RunState {
+  if (rerollBlocker(state) !== null) return state;
+  const roll = rollShop(state.seed);
+  return { ...state, gold: state.gold - REROLL_COST, shop: roll.offers, seed: roll.seed };
 }
 
 export type RunOutcome = "victory" | "defeat";

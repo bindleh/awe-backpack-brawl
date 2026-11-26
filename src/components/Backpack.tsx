@@ -7,11 +7,16 @@ import type { Backpack as BackpackSlots, ItemDef } from "../types";
 const tooltip = (item: ItemDef) =>
   [item.name, ...describeEffects(item.effects).map(({ label }) => label), `⏱️ every ${item.cooldown * TICK_SECONDS}s`].join("\n");
 
-export function Backpack({ backpack }: { backpack: BackpackSlots }) {
+interface BackpackProps {
+  backpack: BackpackSlots;
+  onSell?: (slotIndex: number) => void;
+}
+
+export function Backpack({ backpack, onSell }: BackpackProps) {
   return (
     <section className="rounded-lg border border-panel-edge bg-panel p-4">
       <h2 className="font-display text-xl font-bold">🎒 Backpack</h2>
-      <p className="mb-3 text-sm text-muted">Hover an item to see its stats.</p>
+      <p className="mb-3 text-sm text-muted">Hover an item to see stats. Sell for half price.</p>
       <ul className="grid gap-2" style={{ gridTemplateColumns: `repeat(${BACKPACK_COLS}, minmax(0, 1fr))` }}>
         {backpack.map((slot, index) => {
           const item = slot ? getItem(slot.itemId) : null;
@@ -31,6 +36,16 @@ export function Backpack({ backpack }: { backpack: BackpackSlots }) {
                     {item.icon}
                   </span>
                   <span className="text-center text-xs leading-tight">{item.name}</span>
+                  {onSell && (
+                    <button
+                      type="button"
+                      onClick={() => onSell(index)}
+                      title={`Sell for ${Math.floor(item.price / 2)} 🪙`}
+                      className="mt-1 rounded bg-panel-edge px-2 py-0.5 text-xs font-bold text-parchment hover:bg-gold hover:text-ink disabled:text-muted"
+                    >
+                      Sell {Math.floor(item.price / 2)} 🪙
+                    </button>
+                  )}
                 </>
               )}
             </li>
