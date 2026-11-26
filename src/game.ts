@@ -9,7 +9,7 @@ import type { BattleReplay, GameState, Opponent, RunState } from "./types";
  */
 
 export function newGame(seed: number): GameState {
-  return { phase: "shop", run: newRun(seed), battle: null, error: null, searchId: 0 };
+  return { phase: "shop", run: newRun(seed), battle: null, error: null, searchId: 0, submitted: false };
 }
 
 /** Applies a shop/backpack action; only allowed while shopping. */
@@ -77,8 +77,14 @@ export function leaveBattle(game: GameState): GameState {
   return { ...game, phase: runOutcome(game.run) ? "finished" : "shop", battle: null };
 }
 
+/** Marks a finished run as saved in the hall of fame, so it is never submitted again. */
+export function markSubmitted(game: GameState): GameState {
+  if (game.phase !== "finished" || game.submitted) return game;
+  return { ...game, submitted: true };
+}
+
 /** URL paths of the app's screens. */
-export const ROUTES = { start: "/", shop: "/shop", battle: "/battle", result: "/result" } as const;
+export const ROUTES = { start: "/", shop: "/shop", battle: "/battle", result: "/result", hallOfFame: "/hall-of-fame" } as const;
 export type GameRoute = (typeof ROUTES)[keyof typeof ROUTES];
 
 /**

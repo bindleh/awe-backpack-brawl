@@ -97,6 +97,13 @@ export const RULES: RuleSection[] = [
     ],
   },
   {
+    title: "🏆 Hall of fame",
+    rules: [
+      `When a run ends, enter a name (1–20 characters) to save it in the hall of fame. Each run can be submitted once.`,
+      `Ranking: victories first, then more wins, then fewer rounds; on a tie the earlier entry ranks higher.`,
+    ],
+  },
+  {
     title: "💾 Save & resume",
     rules: [
       `Shop, backpack, gold and run progress are saved automatically in this browser.`,

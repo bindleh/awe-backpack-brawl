@@ -34,6 +34,8 @@ export type ShopOffers = (string | null)[];
 export type Phase = "shop" | "searching" | "battle" | "finished";
 
 export interface RunState {
+  /** Unique id of this run; the hall of fame accepts each run once. */
+  runId: string;
   round: number;
   gold: number;
   lives: number;
@@ -131,4 +133,22 @@ export interface GameState {
   error: string | null;
   /** Counts started searches; only the response of the current search may start a battle. */
   searchId: number;
+  /** Whether this finished run was saved in the hall of fame. */
+  submitted: boolean;
+}
+
+/** A finished run as sent to `POST /api/hall-of-fame`. */
+export interface HallOfFameSubmission {
+  runId: string;
+  name: string;
+  outcome: "victory" | "defeat";
+  wins: number;
+  lives: number;
+  rounds: number;
+}
+
+/** A stored hall of fame entry as returned by the API. */
+export interface HallOfFameEntry extends HallOfFameSubmission {
+  /** ISO timestamp set by the server. */
+  submittedAt: string;
 }

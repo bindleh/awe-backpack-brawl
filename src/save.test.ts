@@ -63,6 +63,28 @@ describe("B6 save and resume", () => {
     expect(parseSavedGame(JSON.stringify(old))).toBeNull();
   });
 
+  it("gives old saves a run id and an unsubmitted hall of fame state", () => {
+    const old = JSON.parse(serializeGame(newGame(123)));
+    delete old.game.run.runId;
+    delete old.game.submitted;
+    const parsed = parseSavedGame(JSON.stringify(old));
+    expect(parsed?.run.runId).toMatch(/^[0-9a-f-]{36}$/);
+    expect(parsed?.submitted).toBe(false);
+  });
+
+  it("keeps runId and submitted of a finished run and rejects invalid values", () => {
+    const finished = newGame(123);
+    finished.phase = "finished";
+    finished.run.lives = 0;
+    finished.submitted = true;
+    expect(parseSavedGame(serializeGame(finished))).toEqual(finished);
+
+    expect(parseSavedGame(serializeGame({ ...finished, submitted: "yes" as unknown as boolean }))).toBeNull();
+    expect(parseSavedGame(serializeGame({ ...finished, run: { ...finished.run, runId: "" } }))).toBeNull();
+    // Only a finished run can have been submitted.
+    expect(parseSavedGame(serializeGame({ ...newGame(123), submitted: true }))).toBeNull();
+  });
+
   it("rejects impossible shop and finished states", () => {
     const impossible = newGame(123);
     impossible.run.gold = -1;

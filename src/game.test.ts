@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fightBlocker, newGame, searchFailed, skipReplay, startBattle, startSearch } from "./game";
+import { fightBlocker, markSubmitted, newGame, searchFailed, skipReplay, startBattle, startSearch } from "./game";
 import type { GameState, Opponent } from "./types";
 
 const opponent: Opponent = { id: "test", name: "Test", icon: "🐢", hp: 25, round: 1, items: ["pot-lid"] };
@@ -67,5 +67,23 @@ describe("B5 resilient matchmaking", () => {
     const battle = startBattle(startSearch(shopWithItem()), opponent, 1);
     expect(fightBlocker(battle)).not.toBeNull();
     expect(startSearch(battle)).toBe(battle);
+  });
+});
+
+describe("B7 hall of fame state", () => {
+  it("gives every run its own id and starts unsubmitted", () => {
+    const a = newGame(1);
+    const b = newGame(1);
+    expect(a.run.runId).not.toBe(b.run.runId);
+    expect(a.submitted).toBe(false);
+  });
+
+  it("marks only finished runs as submitted", () => {
+    const shop = shopWithItem();
+    expect(markSubmitted(shop)).toBe(shop);
+    const finished: GameState = { ...shop, phase: "finished", run: { ...shop.run, lives: 0 } };
+    const submitted = markSubmitted(finished);
+    expect(submitted.submitted).toBe(true);
+    expect(markSubmitted(submitted)).toBe(submitted);
   });
 });

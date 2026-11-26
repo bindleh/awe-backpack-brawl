@@ -68,6 +68,10 @@ Oak Buckler, Pot Lid and Spiked Shield form the Stone set. Sets grant a bonus wh
 
 **Burn** ticks every 2 ticks for 3 damage per stack; block absorbs it first and it loses 1 stack after every tick. **Poison** ticks every 2 ticks for 1 damage per stack; it ignores block and never decays. Burn and Poison tick before items fire. **Heal** restores the fighter's own HP when the item fires, never above max HP. Opponents carry some of these items too. The "How it works" panel in the shop summarises these rules in the game itself.
 
+### Hall of fame
+
+At the end of a run you can enter a name and submit the run to the hall of fame. While sending, the button is disabled; a failed submission shows the error and a retry button, and your name stays in the field. Each run is submitted at most once (it carries a unique run id, and the server rejects repeats). The **🏆 Hall of fame** page in the header shows the best runs with loading, empty and error states, with or without a run in progress. Entries are kept in the server's memory, so restarting the API clears them.
+
 ## Current starter features
 
 - A start page, a shop page, a battle page and a result page, each with its own URL.
@@ -80,7 +84,7 @@ Oak Buckler, Pot Lid and Spiked Shield form the Stone set. Sets grant a bonus wh
 - Tooltips and a rules panel explaining every mechanic.
 - A responsive React interface styled with Tailwind CSS.
 
-The starter does **not** include any automated tests. Vitest is installed and configured; add your own tests as `*.test.ts` files next to the code they test.
+Tests are Vitest `*.test.ts` files next to the code they test (`src/` and `server/`).
 
 ## Run locally
 
@@ -99,13 +103,15 @@ The web app runs at `http://localhost:5174`; its API runs at `http://localhost:4
 | `pnpm server` | Start only the API on port 4200 |
 | `pnpm build` | Type-check and create a production frontend build |
 | `pnpm lint` | Run ESLint over the project |
-| `pnpm test` | Run all Vitest tests once (there are none yet) |
+| `pnpm test` | Run all Vitest tests once |
 | `pnpm preview` | Preview a previously created production build |
 
 ## API
 
 - `GET /api/health`
 - `GET /api/opponents?round=1`
+- `POST /api/hall-of-fame` — store a finished run (validated; each run at most once)
+- `GET /api/hall-of-fame` — the best 10 runs: victories first, then more wins, then fewer rounds, then earlier submission
 
 The opponent for each round is fixed. Add `?latency=2500` to change the delay (default 1200 ms, at most 5000 ms) or `?fail=true` to force a failed request. Starting the server with `API_FAIL=true` makes every opponent request fail.
 
@@ -122,8 +128,8 @@ Game rules live in plain TypeScript modules that do not depend on React. Every r
 - `src/battle.ts` turns item lists into fighters and contains the battle simulation (`simulateBattle`).
 - `src/game.ts` contains the phase transitions of a run (`shop → searching → battle → shop … → finished`), the replay steps and the mapping from phase to page.
 - `src/rules.ts` builds the rule explanations and tooltips from the game constants.
-- `src/api.ts` contains the opponent HTTP request.
+- `src/api.ts` contains the opponent and hall of fame HTTP requests.
 - `src/state/` holds the game state for all pages (`GameProvider`, `useGame`) and `RequireRoute`, which redirects every page to the one matching the current phase.
 - `src/pages/` contains one component per screen; `src/App.tsx` defines the routes.
 - `src/components/` contains the presentational parts: run header, shop, backpack, item card, rules panel, fight bar, battle view and end-of-run screen.
-- `server/index.js` implements the local API; `server/opponents.js` contains the opponent table.
+- `server/index.js` implements the local API; `server/opponents.js` contains the opponent table; `server/hallOfFame.js` validates and ranks hall of fame entries.
