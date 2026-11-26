@@ -80,4 +80,13 @@ export const RULES: RuleSection[] = [
       `Set bonuses apply to both fighters. Set badges identify Fire and Stone items in the shop and battle view.`,
     ],
   },
+  {
+    title: "💾 Save & resume",
+    rules: [
+      `Shop, backpack, gold and run progress are saved automatically in this browser.`,
+      `Refreshing during an opponent search returns to the usable shop; the cancelled search does not reroll the shop or choose a different opponent.`,
+      `Refreshing during battle resumes the matching battle screen with the same opponent and replay, so a battle result cannot be applied twice.`,
+      `Malformed or incompatible saves are ignored and replaced with a fresh playable start.`,
+    ],
+  },
 ];
