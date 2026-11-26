@@ -10,6 +10,7 @@ import type { ItemEffects } from "./types";
 
 const BATTLE_SECONDS = MAX_TICKS * TICK_SECONDS;
 
+
 /** Tooltip per item effect. */
 export const EFFECT_HELP: Record<keyof ItemEffects, string> = {
   damage: "Damage: hits the enemy. Block absorbs it first, the rest is lost from HP.",
