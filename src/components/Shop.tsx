@@ -6,12 +6,25 @@ import { ItemCard } from "./ItemCard";
 interface ShopProps {
   run: RunState;
   onBuy: (offerIndex: number) => void;
+  onReroll: () => void;
+  rerollBlocker: string | null;
 }
 
-export function Shop({ run, onBuy }: ShopProps) {
+export function Shop({ run, onBuy, onReroll, rerollBlocker }: ShopProps) {
   return (
     <section className="rounded-lg border border-panel-edge bg-panel p-4">
-      <h2 className="mb-3 font-display text-xl font-bold">🏪 Shop</h2>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h2 className="font-display text-xl font-bold">🏪 Shop</h2>
+        <button
+          type="button"
+          onClick={onReroll}
+          disabled={rerollBlocker !== null}
+          title={rerollBlocker ?? "Roll four new offers"}
+          className="rounded-md bg-panel-edge px-3 py-1.5 text-sm font-bold text-parchment hover:bg-gold hover:text-ink disabled:text-muted"
+        >
+          {rerollBlocker ?? "Reroll 1 🪙"}
+        </button>
+      </div>
       <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {run.shop.map((itemId, index) => {
           if (!itemId) {

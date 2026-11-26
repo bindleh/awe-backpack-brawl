@@ -1,7 +1,10 @@
 export interface ItemEffects {
   damage?: number;
   block?: number;
+  burnStacks?: number;
 }
+
+export type ItemSet = "Fire" | "Stone";
 
 export interface ItemDef {
   id: string;
@@ -11,6 +14,7 @@ export interface ItemDef {
   /** Cooldown in battle ticks (1 tick = 0.5 s). */
   cooldown: number;
   effects: ItemEffects;
+  set?: ItemSet;
 }
 
 /** A concrete item the player owns; several instances may share one `itemId`. */
@@ -55,9 +59,10 @@ export interface FighterSnapshot {
   hp: number;
   maxHp: number;
   block: number;
+  burn: number;
 }
 
-export type BattleEventKind = "damage" | "block";
+export type BattleEventKind = "damage" | "block" | "burn";
 
 export interface BattleEvent {
   tick: number;

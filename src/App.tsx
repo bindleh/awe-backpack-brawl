@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     path: ROUTES.start,
     element: <Layout />,
     children: [
-      { index: true, element: <StartPage /> },
+      { index: true, element: <RequireRoute route={ROUTES.start}><StartPage /></RequireRoute> },
       { path: ROUTES.shop, element: <RequireRoute route={ROUTES.shop}><ShopPage /></RequireRoute> },
       { path: ROUTES.battle, element: <RequireRoute route={ROUTES.battle}><BattlePage /></RequireRoute> },
       { path: ROUTES.result, element: <RequireRoute route={ROUTES.result}><ResultPage /></RequireRoute> },
