@@ -91,10 +91,12 @@ export function BattleView({ battle, done, continueLabel, onSkip, onContinue }: 
 /** Hero actions | time | enemy actions. */
 const LOG_ROW = "grid grid-cols-[1fr_auto_1fr] items-start gap-2";
 
-/** Text colour per event: damage red, burn gold, everything else neutral. */
+/** Text colour per event: damage red, burn gold, poison and heal green, everything else neutral. */
 const EVENT_COLOUR: Partial<Record<BattleEventKind, string>> = {
   damage: "text-life",
   burn: "text-gold",
+  poison: "text-poison",
+  heal: "text-heal",
 };
 
 function LogLine({ event }: { event: BattleEvent }) {
@@ -124,7 +126,7 @@ interface FighterPanelProps {
 }
 
 function FighterPanel({ side, icon, fighter, snapshot }: FighterPanelProps) {
-  const { hp, maxHp, block, burn } = snapshot;
+  const { hp, maxHp, block, burn, poison } = snapshot;
   const knockedOut = hp <= 0;
   const itemIds = fighter.items.map((item) => item.itemId);
   const fireActive = countSetItems(itemIds, "Fire") >= 2;
@@ -145,6 +147,7 @@ function FighterPanel({ side, icon, fighter, snapshot }: FighterPanelProps) {
       <Bar label="HP" value={hp} max={maxHp} text={`${hp} / ${maxHp}`} colour="bg-life" help={STATUS_HELP.hp} />
       <Bar label="Block" value={block} max={maxHp} text={`🛡️ ${block}`} colour="bg-block" help={STATUS_HELP.block} />
       <Bar label="Burn" value={burn} max={Math.max(1, burn)} text={`🔥 ${burn} stacks`} colour="bg-gold" help={STATUS_HELP.burn} />
+      <Bar label="Poison" value={poison} max={Math.max(1, poison)} text={`☠️ ${poison} stacks`} colour="bg-poison" help={STATUS_HELP.poison} />
 
       {(fireActive || stoneActive) && (
         <div className="flex flex-wrap gap-1 text-xs">

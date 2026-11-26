@@ -54,8 +54,19 @@ The battle screen shows HP and block for both fighters, their items, a timer, an
 | 🛡️ Oak Buckler | 3 | 5 | +4 block |
 | 🍳 Pot Lid | 2 | 3 | +2 block |
 | ⚔️ Spiked Shield | 4 | 6 | 3 damage, +3 block |
+| 🪄 Ember Wand | 3 | 4 | +2 burn stacks (Fire set) |
+| 🔥 Flame Sword | 5 | 6 | 4 damage, +2 burn stacks (Fire set) |
+| ☄️ Phoenix Cinder | 4 | 5 | 2 damage, +3 burn stacks (Fire set) |
+| 🧪 Venom Dagger | 3 | 4 | 1 damage, +1 poison stack |
+| 🐍 Viper Fang | 4 | 5 | +2 poison stacks |
+| ☠️ Toxic Vial | 5 | 6 | +3 poison stacks |
+| 🌿 Healing Herb | 2 | 4 | heal 2 HP |
+| 🧴 Health Potion | 4 | 6 | heal 5 HP |
+| 🍖 Troll Salve | 5 | 8 | heal 8 HP |
 
-Items have no sets and no other effects. The "How it works" panel in the shop summarises these rules in the game itself.
+Oak Buckler, Pot Lid and Spiked Shield form the Stone set. Sets grant a bonus while 2 or more of their items are in a backpack (Fire: +2 to every damage effect, Stone: +4 block at the start of battle).
+
+**Burn** ticks every 2 ticks for 3 damage per stack; block absorbs it first and it loses 1 stack after every tick. **Poison** ticks every 2 ticks for 1 damage per stack; it ignores block and never decays. Burn and Poison tick before items fire. **Heal** restores the fighter's own HP when the item fires, never above max HP. Opponents carry some of these items too. The "How it works" panel in the shop summarises these rules in the game itself.
 
 ## Current starter features
 

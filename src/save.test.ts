@@ -37,6 +37,21 @@ describe("B6 save and resume", () => {
     expect(parsed?.battle?.opponent).toEqual(opponent);
   });
 
+  it("drops a pre-Poison battle save but still loads its shop save", () => {
+    const shop = newGame(123);
+    shop.run.backpack[0] = { uid: "item-1", itemId: "chipped-dagger" };
+    shop.run.nextUid = 2;
+    const opponent = { id: "test", name: "Test", icon: "🐢", hp: 25, round: 1, items: ["pot-lid"] };
+    const battle = startBattle(shop, opponent);
+    const old = JSON.parse(serializeGame(battle));
+    for (const frame of old.game.battle.result.frames) {
+      delete frame.player.poison;
+      delete frame.opponent.poison;
+    }
+    expect(parseSavedGame(JSON.stringify(old))).toBeNull();
+    expect(parseSavedGame(serializeGame(shop))).not.toBeNull();
+  });
+
   it("rejects impossible shop and finished states", () => {
     const impossible = newGame(123);
     impossible.run.gold = -1;

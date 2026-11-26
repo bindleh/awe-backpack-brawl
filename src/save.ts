@@ -77,8 +77,9 @@ function validBattle(value: unknown): boolean {
     if (!isRecord(frame.player) || !isRecord(frame.opponent) || !Array.isArray(frame.events)) return false;
     for (const snapshot of [frame.player, frame.opponent]) {
       if (!isInteger(snapshot.hp) || !isInteger(snapshot.maxHp, 1) ||
-          !isInteger(snapshot.block) || !isInteger(snapshot.burn)) return false;
-      if (snapshot.hp > snapshot.maxHp || snapshot.block > snapshot.maxHp * 10 || snapshot.burn > snapshot.maxHp) return false;
+          !isInteger(snapshot.block) || !isInteger(snapshot.burn) || !isInteger(snapshot.poison)) return false;
+      if (snapshot.hp > snapshot.maxHp || snapshot.block > snapshot.maxHp * 10 ||
+          snapshot.burn > snapshot.maxHp || snapshot.poison > snapshot.maxHp * 10) return false;
     }
   }
   return true;
