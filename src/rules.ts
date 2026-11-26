@@ -48,6 +48,7 @@ export const RULES: RuleSection[] = [
       `Bought items go to the first free slot of your ${BACKPACK_COLS}×${BACKPACK_ROWS} backpack and stay there for the whole run.`,
       `Sell an item from the backpack for half its listed price, rounded down.`,
       `Reroll all ${SHOP_SIZE} shop offers for 1 🪙. Gold and backpack changes complete atomically.`,
+      `Select a backpack item, then choose another slot to move it. Moving onto an occupied slot swaps both items; selection can be cancelled.`,
       `Only items in your backpack fight. Their position doesn't matter.`,
     ],
   },

@@ -79,6 +79,32 @@ export function rerollShop(state: RunState): RunState {
   return { ...state, gold: state.gold - REROLL_COST, shop: roll.offers, seed: roll.seed };
 }
 
+/** Why two backpack slots cannot be swapped/moved right now, or null if possible. */
+export function moveBlocker(state: RunState, fromIndex: number, toIndex: number): string | null {
+  if (
+    !Number.isInteger(fromIndex) ||
+    !Number.isInteger(toIndex) ||
+    fromIndex < 0 ||
+    toIndex < 0 ||
+    fromIndex >= state.backpack.length ||
+    toIndex >= state.backpack.length
+  ) return "Invalid slot";
+  if (!state.backpack[fromIndex]) return "Empty source slot";
+  if (fromIndex === toIndex) return "Choose another slot";
+  return null;
+}
+
+/** Moves an item to another slot, or swaps with an occupied target atomically. */
+export function moveItem(state: RunState, fromIndex: number, toIndex: number): RunState {
+  if (moveBlocker(state, fromIndex, toIndex) !== null) return state;
+  const backpack = [...state.backpack];
+  const source = backpack[fromIndex];
+  if (!source) return state;
+  backpack[fromIndex] = backpack[toIndex];
+  backpack[toIndex] = source;
+  return { ...state, backpack };
+}
+
 export type RunOutcome = "victory" | "defeat";
 
 /** `victory` / `defeat` once the run is over, otherwise `null`. */
