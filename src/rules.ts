@@ -71,6 +71,8 @@ export const RULES: RuleSection[] = [
   {
     title: "⚔️ Battle",
     rules: [
+      `"Find opponent" starts one search for this round's opponent. While it runs, the shop is locked and no second search can start.`,
+      `If the search fails, you are back in the shop with the reason and can try again. Only the answer to the current search for the current round starts a battle; late or duplicate answers are ignored.`,
       `Battles run on their own. Your hero has ${HERO_BASE_HP} HP; every item fires whenever its cooldown is up.`,
       `Damage hits block first; only the rest is lost from HP. Unused block stays for the rest of the battle.`,
       `Knock the enemy out to win. ${STATUS_HELP.timer} If both fall at once, you lose.`,

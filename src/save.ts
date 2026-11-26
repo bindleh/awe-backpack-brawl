@@ -112,6 +112,8 @@ export function parseSavedGame(raw: string): GameState | null {
         game.phase !== "battle" && game.phase !== "finished") return null;
     if (!validRun(game.run)) return null;
     if (game.error !== null && typeof game.error !== "string") return null;
+    if (game.searchId === undefined) game.searchId = 0;
+    if (!isInteger(game.searchId)) return null;
 
     if (game.phase === "battle") {
       if (!validBattle(game.battle)) return null;
