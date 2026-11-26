@@ -1,4 +1,13 @@
-import { HERO_BASE_HP, MAX_TICKS, TICK_SECONDS } from "./battle";
+import {
+  ACTIVE_SET_MIN_ITEMS,
+  BURN_DAMAGE_PER_STACK,
+  BURN_TICK_INTERVAL,
+  FIRE_SET_DAMAGE_BONUS,
+  HERO_BASE_HP,
+  MAX_TICKS,
+  STONE_SET_BLOCK_BONUS,
+  TICK_SECONDS,
+} from "./battle";
 import { GOLD_PER_ROUND, START_GOLD, START_LIVES, WINS_TO_VICTORY } from "./run";
 import { BACKPACK_COLS, BACKPACK_ROWS, SHOP_SIZE } from "./shop";
 import type { ItemEffects } from "./types";
@@ -15,6 +24,7 @@ const BATTLE_SECONDS = MAX_TICKS * TICK_SECONDS;
 export const EFFECT_HELP: Record<keyof ItemEffects, string> = {
   damage: "Damage: hits the enemy. Block absorbs it first, the rest is lost from HP.",
   block: "Block: absorbs incoming damage until used up. Unused block stays for the rest of the battle.",
+  burnStacks: "Burn: adds stacks to the enemy. Every 2 ticks, 3 damage per stack is absorbed by block first, then the stack count decays by 1.",
 };
 
 export const COOLDOWN_HELP = `Cooldown: the item fires every time this much battle time has passed (1 tick = ${TICK_SECONDS} s).`;
@@ -23,6 +33,7 @@ export const COOLDOWN_HELP = `Cooldown: the item fires every time this much batt
 export const STATUS_HELP = {
   hp: "HP: reaching 0 is a knockout.",
   block: EFFECT_HELP.block,
+  burn: EFFECT_HELP.burnStacks,
   timer: `After ${BATTLE_SECONDS} s the fighter with the higher share of HP wins; a tie counts as your loss.`,
 };
 
@@ -58,6 +69,15 @@ export const RULES: RuleSection[] = [
       `Battles run on their own. Your hero has ${HERO_BASE_HP} HP; every item fires whenever its cooldown is up.`,
       `Damage hits block first; only the rest is lost from HP. Unused block stays for the rest of the battle.`,
       `Knock the enemy out to win. ${STATUS_HELP.timer} If both fall at once, you lose.`,
+    ],
+  },
+  {
+    title: "🔥 Item sets & Burn",
+    rules: [
+      `${ACTIVE_SET_MIN_ITEMS} or more items of the Fire set grant +${FIRE_SET_DAMAGE_BONUS} damage to every damage effect. Fire items add 2 or 3 Burn stacks.`,
+      `${ACTIVE_SET_MIN_ITEMS} or more items of the Stone set grant +${STONE_SET_BLOCK_BONUS} block at the start of battle.`,
+      `Burn ticks every ${BURN_TICK_INTERVAL} ticks and deals ${BURN_DAMAGE_PER_STACK} damage per stack. Block absorbs it first; 1 stack decays after each Burn tick until it wears off.`,
+      `Set bonuses apply to both fighters. Set badges identify Fire and Stone items in the shop and battle view.`,
     ],
   },
 ];

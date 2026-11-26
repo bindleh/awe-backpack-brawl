@@ -1,5 +1,5 @@
 import { TICK_SECONDS, MAX_TICKS } from "../battle";
-import { getItem } from "../items";
+import { countSetItems, describeSet, getItem } from "../items";
 import { STATUS_HELP } from "../rules";
 import type { BattleEvent, BattleEventKind, BattleReplay, Fighter, FighterSnapshot, Side } from "../types";
 
@@ -91,9 +91,10 @@ export function BattleView({ battle, done, continueLabel, onSkip, onContinue }: 
 /** Hero actions | time | enemy actions. */
 const LOG_ROW = "grid grid-cols-[1fr_auto_1fr] items-start gap-2";
 
-/** Text colour per event: damage red, everything else neutral. */
+/** Text colour per event: damage red, burn gold, everything else neutral. */
 const EVENT_COLOUR: Partial<Record<BattleEventKind, string>> = {
   damage: "text-life",
+  burn: "text-gold",
 };
 
 function LogLine({ event }: { event: BattleEvent }) {
@@ -123,8 +124,11 @@ interface FighterPanelProps {
 }
 
 function FighterPanel({ side, icon, fighter, snapshot }: FighterPanelProps) {
-  const { hp, maxHp, block } = snapshot;
+  const { hp, maxHp, block, burn } = snapshot;
   const knockedOut = hp <= 0;
+  const itemIds = fighter.items.map((item) => item.itemId);
+  const fireActive = countSetItems(itemIds, "Fire") >= 2;
+  const stoneActive = countSetItems(itemIds, "Stone") >= 2;
 
   return (
     <article
@@ -140,11 +144,22 @@ function FighterPanel({ side, icon, fighter, snapshot }: FighterPanelProps) {
 
       <Bar label="HP" value={hp} max={maxHp} text={`${hp} / ${maxHp}`} colour="bg-life" help={STATUS_HELP.hp} />
       <Bar label="Block" value={block} max={maxHp} text={`🛡️ ${block}`} colour="bg-block" help={STATUS_HELP.block} />
+      <Bar label="Burn" value={burn} max={Math.max(1, burn)} text={`🔥 ${burn} stacks`} colour="bg-gold" help={STATUS_HELP.burn} />
+
+      {(fireActive || stoneActive) && (
+        <div className="flex flex-wrap gap-1 text-xs">
+          {fireActive && <span className="rounded-full bg-gold/20 px-2 py-0.5 font-bold text-gold">🔥 Fire active: +2 damage</span>}
+          {stoneActive && <span className="rounded-full bg-block/20 px-2 py-0.5 font-bold">🪨 Stone active: +4 block</span>}
+        </div>
+      )}
 
       <ul className="flex flex-wrap gap-1" aria-label="Items">
         {fighter.items.map((item, index) => (
-          <li key={index} title={item.name} className="rounded bg-ink/50 px-1.5 py-0.5 text-xl">
-            {item.icon}
+          <li key={index} title={item.name} className="flex items-center gap-1 rounded bg-ink/50 px-1.5 py-0.5 text-xl">
+            <span>{item.icon}</span>
+            {getItem(item.itemId).set && (
+              <span className="text-[0.65rem] font-bold">{describeSet(getItem(item.itemId).set!)}</span>
+            )}
           </li>
         ))}
       </ul>
