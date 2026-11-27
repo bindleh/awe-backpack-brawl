@@ -60,3 +60,17 @@ In addition to the functional requirements, your team must define a small set of
 Document the selected goals, why they matter, and the decisions or trade-offs you made to support them. You should also consider how you can evaluate whether your solution meets those goals.
 
 There is no single required architecture, or design pattern. During the exam, team members must be able to explain and defend the chosen non functionals, and discuss the resulting engineering decisions.
+
+
+
+
+
+## OUR Qualitative Goals and Team Decisions
+
+1. Valid state (Blockers): Every action is a pure function with a blocker that returns the reason why the action is not allowed. If an action is invalid, the state stays unchanged, so negative gold, duplicated items or a full backpack being overfilled cannot occur. Tests call every action with invalid input and expect an unchanged state.
+
+2. Reliable matchmaking (Search ID): Every search gets an increasing searchId. A battle starts only for the current search and the current round, so late, duplicate or outdated responses are ignored. A failed search returns the player to a usable shop with a retry option. Tests cover each of these cases.
+
+3. Deterministic battles (Burn, Poison, Heal): All status effects use fixed tick intervals and values, defined as constants that also generate the rules panel and tooltips. The same fighters always produce the same battle, which makes outcomes explainable and testable.
+
+4. Local storage for the hall of fame: Entries are kept in an in-memory array on the server, as the requirements allow. This keeps the setup simple and testable. The trade-off is that all entries are lost on a server restart.
