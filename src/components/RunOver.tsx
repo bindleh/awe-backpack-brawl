@@ -89,7 +89,7 @@ function HallOfFameForm({ run, outcome, submitted, onSubmitted }: Omit<RunOverPr
         <button
           type="submit"
           disabled={sending || trimmed.length === 0}
-          className="shrink-0 rounded-md bg-life px-3 py-1 font-bold text-parchment hover:brightness-110 disabled:bg-panel-edge disabled:text-muted"
+          className="shrink-0 rounded-md bg-halloffamebutton px-3 py-1 font-bold text-parchment hover:brightness-110 disabled:bg-panel-edge disabled:text-muted"
         >
           {sending ? "Sending…" : status.state === "error" ? "Retry" : "Submit to hall of fame"}
         </button>
