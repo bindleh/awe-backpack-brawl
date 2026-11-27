@@ -10,6 +10,7 @@ export const GOLD_PER_ROUND = 5;
 export function newRun(seed: number): RunState {
   const roll = rollShop(seed);
   return {
+    runId: crypto.randomUUID(),
     round: 1,
     gold: START_GOLD,
     lives: START_LIVES,

@@ -28,6 +28,9 @@ const isKnownItem = (value: unknown): value is string =>
 
 function validRun(value: unknown): value is RunState {
   if (!isRecord(value)) return false;
+  // Saves from before the hall of fame have no run id: give them a fresh one.
+  if (value.runId === undefined) value.runId = crypto.randomUUID();
+  if (typeof value.runId !== "string" || value.runId.length === 0 || value.runId.length > 100) return false;
   if (!isInteger(value.round, 1) || !isInteger(value.gold) || !isInteger(value.lives) ||
       !isInteger(value.wins) || !isInteger(value.seed) || !isInteger(value.nextUid, 1)) return false;
   if (value.gold < 0 || value.lives > 3 || value.wins > 5) return false;
@@ -77,8 +80,9 @@ function validBattle(value: unknown): boolean {
     if (!isRecord(frame.player) || !isRecord(frame.opponent) || !Array.isArray(frame.events)) return false;
     for (const snapshot of [frame.player, frame.opponent]) {
       if (!isInteger(snapshot.hp) || !isInteger(snapshot.maxHp, 1) ||
-          !isInteger(snapshot.block) || !isInteger(snapshot.burn)) return false;
-      if (snapshot.hp > snapshot.maxHp || snapshot.block > snapshot.maxHp * 10 || snapshot.burn > snapshot.maxHp) return false;
+          !isInteger(snapshot.block) || !isInteger(snapshot.burn) || !isInteger(snapshot.poison)) return false;
+      if (snapshot.hp > snapshot.maxHp || snapshot.block > snapshot.maxHp * 10 ||
+          snapshot.burn > snapshot.maxHp || snapshot.poison > snapshot.maxHp * 10) return false;
     }
   }
   return true;
@@ -111,6 +115,10 @@ export function parseSavedGame(raw: string): GameState | null {
         game.phase !== "battle" && game.phase !== "finished") return null;
     if (!validRun(game.run)) return null;
     if (game.error !== null && typeof game.error !== "string") return null;
+    if (game.searchId === undefined) game.searchId = 0;
+    if (!isInteger(game.searchId)) return null;
+    if (game.submitted === undefined) game.submitted = false;
+    if (typeof game.submitted !== "boolean" || (game.submitted && game.phase !== "finished")) return null;
 
     if (game.phase === "battle") {
       if (!validBattle(game.battle)) return null;

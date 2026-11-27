@@ -2,6 +2,8 @@ export interface ItemEffects {
   damage?: number;
   block?: number;
   burnStacks?: number;
+  poisonStacks?: number;
+  heal?: number;
 }
 
 export type ItemSet = "Fire" | "Stone";
@@ -32,6 +34,8 @@ export type ShopOffers = (string | null)[];
 export type Phase = "shop" | "searching" | "battle" | "finished";
 
 export interface RunState {
+  /** Unique id of this run; the hall of fame accepts each run once. */
+  runId: string;
   round: number;
   gold: number;
   lives: number;
@@ -60,9 +64,10 @@ export interface FighterSnapshot {
   maxHp: number;
   block: number;
   burn: number;
+  poison: number;
 }
 
-export type BattleEventKind = "damage" | "block" | "burn";
+export type BattleEventKind = "damage" | "block" | "burn" | "poison" | "heal";
 
 export interface BattleEvent {
   tick: number;
@@ -126,4 +131,24 @@ export interface GameState {
   battle: BattleReplay | null;
   /** Last opponent-search error, shown in the shop. */
   error: string | null;
+  /** Counts started searches; only the response of the current search may start a battle. */
+  searchId: number;
+  /** Whether this finished run was saved in the hall of fame. */
+  submitted: boolean;
+}
+
+/** A finished run as sent to `POST /api/hall-of-fame`. */
+export interface HallOfFameSubmission {
+  runId: string;
+  name: string;
+  outcome: "victory" | "defeat";
+  wins: number;
+  lives: number;
+  rounds: number;
+}
+
+/** A stored hall of fame entry as returned by the API. */
+export interface HallOfFameEntry extends HallOfFameSubmission {
+  /** ISO timestamp set by the server. */
+  submittedAt: string;
 }

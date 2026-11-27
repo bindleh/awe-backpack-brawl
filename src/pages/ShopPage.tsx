@@ -31,13 +31,15 @@ export function ShopPage() {
   // Once the opponent is found the phase becomes "battle" and RequireRoute redirects to the battle page.
   async function handleFindOpponent() {
     if (fightBlocker(game) !== null) return;
+    // startSearch increments the id; responses carrying an older id are ignored by the transitions.
+    const searchId = game.searchId + 1;
     update(startSearch);
     try {
       const opponent = await fetchOpponent(run.round);
-      update((current) => startBattle(current, opponent));
+      update((current) => startBattle(current, opponent, searchId));
     } catch (error) {
       const message = error instanceof Error ? error.message : "Opponent search failed.";
-      update((current) => searchFailed(current, message));
+      update((current) => searchFailed(current, message, searchId));
     }
   }
 
