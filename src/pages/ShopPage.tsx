@@ -9,7 +9,7 @@ import { buyItem, moveItem, rerollBlocker, rerollShop, sellItem } from "../run";
 import { useActiveGame } from "../state/GameContext";
 
 export function ShopPage() {
-  const { game, update } = useActiveGame();
+  const { game, startNewRun, update } = useActiveGame();
   const { run, phase } = game;
 
   function handleBuy(offerIndex: number) {
@@ -22,6 +22,12 @@ export function ShopPage() {
 
   function handleReroll() {
     update((current) => updateRun(current, rerollShop));
+  }
+
+  function handleRestart() {
+    if (window.confirm("Restart the current run? Your progress will be lost.")) {
+      startNewRun();
+    }
   }
 
   function handleMove(fromIndex: number, toIndex: number) {
@@ -50,7 +56,13 @@ export function ShopPage() {
 
       {/* While searching, the whole shop/backpack area is disabled so the fighting build can't change. */}
       <fieldset disabled={phase !== "shop"} className="grid min-w-0 gap-4 disabled:opacity-60 lg:grid-cols-[1fr_16rem_18rem]">
-        <Shop run={run} onBuy={handleBuy} onReroll={handleReroll} rerollBlocker={rerollBlocker(run)} />
+        <Shop
+          run={run}
+          onBuy={handleBuy}
+          onReroll={handleReroll}
+          onRestart={handleRestart}
+          rerollBlocker={rerollBlocker(run)}
+        />
         <Backpack backpack={run.backpack} onSell={handleSell} onMove={handleMove} />
         <aside className="flex flex-col gap-4">
           <RulesPanel open={run.round === 1} />

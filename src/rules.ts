@@ -60,6 +60,7 @@ export const RULES: RuleSection[] = [
     title: "🏪 Shop & backpack",
     rules: [
       `You start with ${START_GOLD} 🪙 and earn ${GOLD_PER_ROUND} 🪙 at the start of every new round. Unspent gold carries over.`,
+      `Restart the run from the shop at any time; this discards the current progress and starts over.`,
       `The shop offers ${SHOP_SIZE} new items every round.`,
       `Bought items go to the first free slot of your ${BACKPACK_COLS}×${BACKPACK_ROWS} backpack and stay there for the whole run.`,
       `Sell an item from the backpack for half its listed price, rounded down.`,
@@ -107,6 +108,7 @@ export const RULES: RuleSection[] = [
     title: "💾 Save & resume",
     rules: [
       `Shop, backpack, gold and run progress are saved automatically in this browser.`,
+      `Restarting from the shop replaces the saved run with a fresh one.`,
       `Refreshing during an opponent search returns to the usable shop; the cancelled search does not reroll the shop or choose a different opponent.`,
       `Refreshing during battle resumes the matching battle screen with the same opponent and replay, so a battle result cannot be applied twice.`,
       `Malformed or incompatible saves are ignored and replaced with a fresh playable start.`,
